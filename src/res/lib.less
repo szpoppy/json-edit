@@ -1,0 +1,549 @@
+@hack9: ~"\9";
+
+@font-family-base: "Microsoft YaHei", "Segoe UI", "Lucida Grande", Helvetica, Arial, FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB", "Hiragino Sans GB W3", FontAwesome, sans-serif;
+@font-color: #444444;
+
+.-transition(@str:all 0.3s ease-out) {
+    transition: @str;
+}
+
+.-background-rgba(@red, @green, @blue, @alpha:1) {
+    @filtercolor: `(_f = function(d){var v = (parseInt(d) |0) .toString(16) ;return v.length<2 ? "0" + v: v;}, "#" + _f(@{alpha}* 255) + _f(@{red}) + _f(@{green}) + _f(@{blue})) `;
+    background-color: ~"rgba(@{red},@{green},@{blue},@{alpha})";
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@{filtercolor}',endColorstr='@{filtercolor}');
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='@{filtercolor}',endColorstr='@{filtercolor}');
+}
+
+.-opacity(@opacity: 80) {
+    opacity: @opacity / 100;
+    filter: ~"alpha(opacity=@{opacity})";
+}
+
+//线性渐变
+.-linear-y(@start-color, @end-color, @start-percent: 0%, @end-percent: 100%) {
+    background-color: @start-color;
+    background-image: -webkit-gradient(linear, @start-percent top, @end-percent bottom, from(@start-color), to(@end-color)); // Safari 4+, Chrome 2+
+    background-image: -webkit-linear-gradient(top, color-stop(@start-color @start-percent), color-stop(@end-color @end-percent)); // Safari 5.1+, Chrome 10+
+    background-image: -moz-linear-gradient(top, @start-color @start-percent, @end-color @end-percent); // FF 3.6+
+    background-image: linear-gradient(to bottom, @start-color @start-percent, @end-color @end-percent); // Standard, IE10
+    background-repeat: no-repeat;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)", argb(@start-color), argb(@end-color))); // IE9 and down
+    //&:hover{ background-color: @start-color; background-position: 0 100px;}
+    //&:active{ background-color: @end-color; background-position: 0 100px;}
+}
+
+.-text-height(@h) {
+    height: @h;
+    line-height: @h;
+}
+
+.-text-middle() {
+    &:after {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 100%;
+        vertical-align: middle;
+        overflow: hidden;
+    }
+}
+
+// 等宽字体
+.-font-monospace() {
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+}
+.-font-serif() {
+    font-family: Georgia, "Times New Roman", Times, SimSun, FontAwesome, serif;
+}
+
+.-appearance() {
+    -webkit-appearance: none;
+    //-webkit-user-select: none;
+    //-moz-user-select: none;
+    //-ms-user-select: none;
+    //user-select: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    text-transform: none;
+    overflow: visible;
+}
+
+.-box-sizing(@str:border-box) {
+    box-sizing: @str;
+}
+
+.-clearfix() {
+    *zoom: 1;
+    &:before,
+    &:after {
+        display: table;
+        content: "";
+        // Fixes Opera/contenteditable bug:
+        // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+        line-height: 0;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+.-text-ellipsis() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// 按钮
+.-btn(@color, @height) {
+    .-text-height(@height);
+    display: inline-block;
+    margin: 0;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 400;
+    //line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: 0;
+    cursor: pointer;
+    outline: 0;
+    vertical-align: middle;
+    .-appearance();
+    .-transition(~"background-color .3s ease-out,border-color .3s ease-out,box-shadow .1s ease-out");
+
+    background-color: @color;
+    color: contrast(@color, @font-color, #ffffff, 50%);
+    border: 1px solid darken(@color, 10%);
+    &:hover {
+        background-color: darken(@color, 4%);
+    }
+    &:active {
+        border-color: darken(@color, 15%);
+        background-color: darken(@color, 10%);
+        box-shadow: 0 0 4px darken(@color, 18%);
+    }
+    &[disabled],
+    &.disabled {
+        &,
+        &:hover,
+        &:active {
+            .-opacity(80);
+            background-color: @color;
+            border-color: darken(@color, 10%);
+            box-shadow: none;
+        }
+    }
+    div& {
+        display: block;
+        padding: 0;
+    }
+}
+
+// 上传
+.-upload() {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    .file {
+        .-opacity(0);
+        position: absolute;
+        z-index: 2;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow: hidden;
+        cursor: pointer;
+        input {
+            display: block;
+            border: none;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+    }
+}
+
+// 输入框
+@ipt-border-color: #dedede;
+@ipt-border-width: 1px;
+@ipt-placeholder-color: #d6d0ca;
+@ipt-background-color: #ffffff;
+.-ipt(@color, @height) {
+    @height-n: @height - 2;
+    padding: 0 11px;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    input,
+    textarea {
+        width: 279px;
+        margin: 0 -11px;
+        background-color: @ipt-background-color;
+        color: @font-color;
+        border: 1px solid @ipt-border-color;
+        outline: none;
+        font-size: 14px;
+        .-appearance();
+        .-transition(~"border-color .15s ease-in-out,box-shadow .15s ease-in-out");
+        &::-webkit-input-placeholder {
+            color: @ipt-placeholder-color;
+            line-height: normal;
+        }
+        &:focus {
+            border-color: @color;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 5px lighten(@color, 5%);
+        }
+        &:focus + .fa,
+        &:focus + .fa + .fa {
+            color: @color;
+            border-color: @color;
+        }
+        &[disabled],
+        &[disabled] + .icon,
+        &[disabled] + .icon + .icon {
+            background-color: #eeeeee;
+            color: #bbbbbb;
+            border-color: @ipt-border-color;
+            box-shadow: none;
+        }
+    }
+    input {
+        height: @height;
+        padding: 0 10px;
+        line-height: normal;
+        line-height: @height-n @hack9;
+    }
+    textarea {
+        line-height: 18px;
+        resize: none;
+        padding: 8px 10px;
+    }
+    .icon {
+        .-text-middle();
+        display: block;
+        width: @height;
+        text-align: center;
+        font-size: 16px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin: 1px;
+        z-index: 9;
+        color: lighten(@font-color, 20%);
+        overflow: visible;
+        font-style: normal;
+    }
+
+    div& {
+        display: block;
+        input,
+        textarea {
+            width: 100%;
+        }
+    }
+
+    .placeholder {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 2px;
+        bottom: 0;
+        font-size: 12px;
+        line-height: normal;
+        color: @ipt-placeholder-color;
+        padding: 0 12px;
+        pointer-events: none;
+        .-background-rgba(0, 0, 0, 0);
+        .-text-middle();
+    }
+}
+
+.-ipt-left(@width) {
+    padding-left: @width;
+    input,
+    textarea {
+        margin-left: @width*-1;
+        padding-left: @width - 1;
+        width: 246px;
+    }
+    i.icon {
+        left: 0;
+        top: 0;
+    }
+    .placeholder {
+        padding-left: @width;
+    }
+}
+
+.-ipt-right(@width) {
+    padding-right: @width;
+    input,
+    textarea {
+        margin-right: @width * -1;
+        padding-right: @width - 1;
+        width: 246px;
+    }
+    em.icon {
+        right: 0;
+        top: 0;
+    }
+    .placeholder {
+        padding-right: @width;
+    }
+}
+
+.-ipt-both(@width1, @width2:@width1) {
+    padding-right: @width2;
+    padding-left: @width1;
+    input,
+    textarea {
+        margin-right: @width2 * -1;
+        padding-right: @width2 - 1;
+        margin-left: @width1*-1;
+        padding-left: @width1 - 1;
+        width: 213px;
+    }
+    i.icon {
+        left: 0;
+        top: 0;
+    }
+    em.icon {
+        right: 0;
+        top: 0;
+    }
+    .placeholder {
+        padding-right: @width2;
+        padding-left: @width1;
+    }
+}
+
+.-ipt-color(@color) {
+    input,
+    textarea {
+        &,
+        &:focus {
+            border-color: @color;
+            box-shadow: none;
+            color: @font-color;
+        }
+        & + .icon,
+        & + .icon + .icon,
+        &:focus + .icon,
+        &:focus + .icon + .icon {
+            border-color: @color;
+            box-shadow: none;
+            color: @color;
+        }
+    }
+}
+
+.-select-color(@color) {
+    color: @color;
+    &:focus,
+    &:active {
+        outline: 0;
+        color: @color;
+        border-color: @color;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 5px lighten(@color, 20%);
+    }
+}
+
+.-select(@color, @height) {
+    @h1: (@height - 24)/2;
+    border: 1px solid @ipt-border-color;
+    display: inline-block;
+    padding: @h1 4px;
+    height: 22px;
+    line-height: 22px;
+    overflow: hidden;
+    vertical-align: middle;
+    background-color: @ipt-background-color;
+    .-appearance();
+    .-transition(~"border-color .15s ease-in-out,box-shadow .15s ease-in-out");
+    .select-c {
+        display: inline-block;
+        border: 1px solid transparent;
+        background-color: transparent;
+        overflow: hidden;
+        height: 20px;
+        line-height: 0;
+    }
+    select {
+        margin: -1px;
+        height: 22px;
+        padding: 0;
+        line-height: 22px;
+        border: 1px solid #ffffff;
+        outline: none;
+        float: left;
+        background: transparent;
+        width: 291px;
+    }
+    .-select-color(@color);
+    div& {
+        display: block;
+        .select-c {
+            display: block;
+        }
+        select {
+            width: 100%;
+        }
+    }
+    &.disabled {
+        &,
+        &:focus,
+        &:active,
+        &:hover {
+            background-color: #eeeeee;
+            color: #bbbbbb;
+            border-color: @ipt-border-color;
+            box-shadow: none;
+        }
+    }
+}
+
+.-elect-color(@color) {
+    &,
+    & .fa,
+    input:checked + em i:before {
+        color: @color;
+    }
+}
+.-elect(@color) {
+    cursor: pointer;
+    vertical-align: middle;
+    display: inline-block;
+    padding-right: 6px;
+    em {
+        font-style: normal;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+    i {
+        vertical-align: middle;
+        width: 26px;
+        height: 24px;
+        line-height: 24px;
+        overflow: hidden;
+        display: none;
+        font-size: 18px;
+        color: #909090;
+        text-align: center;
+        display: inline-block;
+        font-style: normal;
+    }
+    span {
+        vertical-align: middle;
+    }
+    input {
+        width: 18px;
+        height: 18px;
+        overflow: hidden;
+        vertical-align: middle;
+        display: none;
+    }
+    input[type="checkbox"] + em i {
+        padding-top: 2px;
+        &:before {
+            content: "\f096";
+        }
+    }
+    input[type="radio"] + em i {
+        padding-top: 1px;
+        &:before {
+            content: "\f10c";
+        }
+    }
+    input:checked + em i:before {
+        //color: @color;
+    }
+    input[type="checkbox"]:checked + em i:before {
+        content: "\f046";
+    }
+    input[type="radio"]:checked + em i:before {
+        content: "\f192";
+    }
+    input[disabled] + em {
+        .-opacity(70);
+    }
+
+    .-elect-color(@color);
+}
+
+// 第二种 elect
+.-elect-box(@color) {
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    position: relative;
+    margin-right: 10px;
+
+    em {
+        transition: all 0.3s ease-out;
+        display: block;
+        line-height: 34px;
+        font-style: normal;
+        border: 1px solid @ipt-border-color;
+        overflow: hidden;
+        position: relative;
+        padding: 0 16px;
+        text-align: center;
+        &:hover {
+            border-color: @color;
+        }
+        &:after {
+            /* 使用 ◆ 来左切角 移动端没测试过 */
+            display: none;
+            height: 50px;
+            width: 50px;
+            font-size: 50px;
+            line-height: 50px;
+            position: absolute;
+            bottom: -27px;
+            right: -25px;
+            content: "◆";
+            font-family: monospace;
+            color: #ffffff;
+        }
+    }
+
+    i.fa {
+        display: none;
+        position: absolute;
+        bottom: 1px;
+        right: 1px;
+        z-index: 2;
+        font-size: 10px;
+        text-align: center;
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+        overflow: hidden;
+        color: #ffffff;
+    }
+
+    input {
+        display: none;
+        &:checked ~ em {
+            border-color: @color;
+            color: @color;
+            &:after {
+                display: block;
+                color: @color;
+            }
+        }
+        &:checked ~ i.fa {
+            display: block;
+        }
+    }
+}
+
+.-elect-box-block() {
+    display: block;
+    em {
+        padding: 0;
+    }
+}

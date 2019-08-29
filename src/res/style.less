@@ -1,0 +1,167 @@
+// 自己的函数库
+@import "./lib.less";
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+.app {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 99;
+}
+
+@main-color: #1c3e64;
+@main-height: 22px;
+.locus-json-edit {
+    height: 100%;
+    overflow: auto;
+    padding: 5px 0;
+    box-sizing: border-box;
+    .lje {
+        &-line {
+            &.the-key {
+                > .lje-cols {
+                    .key,
+                    .is {
+                        display: block !important;
+                    }
+                    .remove {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+        &-cols {
+            padding: 1px 10px;
+            display: flex;
+            &.type-object,
+            &.type-array {
+                .full {
+                    display: none;
+                }
+            }
+            &.type-string,
+            &.type-number {
+                .add {
+                    display: none;
+                }
+            }
+            &.type-null,
+            &.type-true,
+            &.type-false {
+                .add,
+                .full {
+                    display: none;
+                }
+            }
+        }
+        &-col {
+            float: left;
+            margin-left: 2px;
+            &.full {
+                flex: 1;
+            }
+            &.key {
+                width: 80px;
+            }
+            &.icon {
+                width: @main-height + 2;
+            }
+            &.key,
+            &.is {
+                display: none;
+            }
+        }
+        &-select {
+            .-select(@main-color, @main-height);
+            border-radius: 3px;
+        }
+        &-ipt {
+            .-ipt(@main-color, @main-height);
+            input {
+                border-radius: 3px;
+            }
+        }
+        &-remove {
+            height: @main-height - 2;
+            border: 1px solid #dedede;
+            position: relative;
+            border-radius: 3px;
+            margin: 1px;
+            &:before {
+                height: 2px;
+                background-color: #dedede;
+                width: 70%;
+                display: block;
+                content: "";
+                left: 15%;
+                top: 9px;
+                position: absolute;
+            }
+
+            &:hover {
+                border-color: @main-color;
+                &:before {
+                    background-color: @main-color;
+                }
+            }
+        }
+        &-add {
+            height: @main-height - 2;
+            border: 1px solid #dedede;
+            position: relative;
+            border-radius: 3px;
+            margin: 1px;
+            &:before {
+                height: 2px;
+                background-color: #dedede;
+                width: 70%;
+                display: block;
+                content: "";
+                left: 15%;
+                top: 9px;
+                position: absolute;
+            }
+            &:after {
+                width: 2px;
+                background-color: #dedede;
+                height: 70%;
+                display: block;
+                content: "";
+                left: 9px;
+                top: 15%;
+                position: absolute;
+            }
+
+            &:hover {
+                border-color: @main-color;
+                &:before,
+                &:after {
+                    background-color: @main-color;
+                }
+            }
+        }
+
+        &-is {
+            height: @main-height;
+            border: 1px solid transparent;
+            position: relative;
+            border-radius: 3px;
+            text-align: center;
+        }
+
+        &-child {
+            padding: 5px 0 5px 15px;
+            &.the-key > .lje-line > .lje-cols {
+                .key,
+                .is {
+                    display: block;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,1 @@
+"use strict";var jsonEdit=new JsonEdit("app");jsonEdit.renderByData({a:"zz",b:"xx",c:["x","y","z",!0,!1,null,{k:1,l:"1"}]});
