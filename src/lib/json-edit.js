@@ -12,6 +12,7 @@
 })(window, function() {
     "use strict";
     let toString = Object.prototype.toString;
+    // 类型判断
     function getValueType(value) {
         let type = toString.call(value).toLowerCase();
         switch (type) {
@@ -31,11 +32,14 @@
         return "";
     }
 
-    let lineString = `<div class="lje-line {#isRoot}">
-                        <div class="lje-cols type-{#type}">
+    // 生成唯一的数字
+    let keyIndex = 10;
+    // 没一行的html结构
+    let lineString = `<div class="lje-line {#isRoot}" key="{#id}">
+                        <div class="lje-cols type-{#type}" lje{#id}="cols">
                             <div class="lje-col key">
                                 <div class="lje-ipt">
-                                    <input type="text" {#keyDis} value="{#key}" />
+                                    <input type="text" lje{#id}="key" {#keyDis} value="{#key}" />
                                 </div>
                             </div>
                             <div class="lje-col icon is">
@@ -44,8 +48,8 @@
                             <div class="lje-col select">
                                 <div class="lje-select">
                                     <span class="select-c">
-                                        <select lje="sel">
-                                            <option value="sting" {#stringType}>string</option>
+                                        <select lje{#id}="sel">
+                                            <option value="string" {#stringType}>string</option>
                                             <option value="number" {#numberType}>number</option>
                                             <option value="object" {#objectType}>object</option>
                                             <option value="array" {#arrayType}>array</option>
@@ -58,7 +62,7 @@
                             </div>
                             <div class="lje-col full">
                                 <div class="lje-ipt">
-                                    <input type="text" lje="val" value="{#value}" />
+                                    <input type="text" lje{#id}="val" value="{#value}" />
                                 </div>
                             </div>
                             <div class="lje-col icon add">
@@ -68,15 +72,18 @@
                                 <div class="lje-remove" lje-click="remove"></div>
                             </div>
                         </div>
-                        <div class="lje-child {#isKey}">{#child}</div>
+                        <div class="lje-child {#isKey}" lje{#id}="child">{#child}</div>
                     </div>`.replace(/>\s+</g, "><");
+    
+    // 按照数据生成一行数据
     function getLineStr(type, value, key, child) {
         // console.log("xxxx>>>>", type, value, key);
         let obj = {
-            type
+            type,
+            id: keyIndex++
         };
         if (key == "#") {
-            obj.isRoot = "the-key";
+            obj.isRoot = "the-root";
             obj.key = "root";
             obj.keyDis = "disabled";
         } else if (key) {
@@ -100,6 +107,7 @@
         });
     }
 
+    // 将数据转换为UI界面（递归）
     function getHTMLByData(value, key) {
         let type = getValueType(value);
         // console.log(type, value);
@@ -126,22 +134,23 @@
         return getLineStr(type, value, key, "");
     }
 
+    // 获取一行的dom
     let domCache = document.createElement("div");
     function getDomByData(value, key) {
         domCache.innerHTML = getHTMLByData(value, key);
         return domCache.firstChild;
     }
 
-    function getDomByLJE(cols) {
-        let doms = cols.getElementsByTagName("*");
+    // 获取的定的dom引用
+    function getDomByLJE(line) {
+        let id = "lje" + line.getAttribute("key");
+        let doms = line.querySelectorAll("[" + id + "]");
         let domObj = {
-            $: cols.parentNode,
-            $cols: cols,
-            $child: cols.nextElementSibling
+            $: line
         };
         for (let i = 0; i < doms.length; i += 1) {
             let dom = doms[i];
-            let key = dom.getAttribute("lje");
+            let key = dom.getAttribute(id);
             if (key) {
                 domObj[key] = dom;
             }
@@ -149,26 +158,86 @@
         return domObj;
     }
 
+    function getDataByLine(line) {
+        let $ = getDomByLJE(line);
+        // console.log($);
+        let type = $.sel.value;
+        if (type == "object") {
+            // console.log($.val, 1)
+            let val = {};
+            $.child.childNodes.forEach(function(item) {
+                if (item.nodeType == 1) {
+                    let [v, k] = getDataByLine(item);
+                    // console.log("zzzzz")
+                    if(k) {
+                        val[k] = v;
+                    }
+
+                    // TODO 需要处理重复字符串
+                }
+            });
+            return [val, $.key.value.trim()];
+        }
+        if (type == "array") {
+            // console.log($.val, 2)
+            let arr = [];
+            $.child.childNodes.forEach(function(item) {
+                if (item.nodeType == 1) {
+                    let [v] = getDataByLine(item);
+                    arr.push(v);
+                }
+            });
+            return [arr, $.key.value.trim()];
+        }
+
+        if (type == "null") {
+            // console.log($.val, 3)
+            return [null, $.key.value.trim()];
+        }
+
+        if (type == "false") {
+            // console.log($.val, 4)
+            return [false, $.key.value.trim()];
+        }
+
+        if (type == "true") {
+            // console.log($.val, 5)
+            return [true, $.key.value.trim()];
+        }
+
+        if (type == "string") {
+            // console.log($, 6)
+            return [$.val.value.trim(), $.key.value.trim()];
+        }
+        if (type == "number") {
+            // console.log($.val, 7)
+            return [Number($.val.value.replace(/\W+/g, "")) || 0, $.key.value.trim()];
+        }
+        return [undefined, ""];
+    }
+
     let events = {
-        change(cols, type) {
-            let $ = getDomByLJE(cols);
-            $.$cols.className = "lje-cols type-" + type;
-            $.$child.className = "lje-child" + (type == "object" ? " the-key" : "");
+        // select change
+        change(line, type) {
+            let $ = getDomByLJE(line);
+            $.cols.className = "lje-cols type-" + type;
+            $.child.className = "lje-child" + (type == "object" ? " the-key" : "");
             if (type == "number") {
                 $.val.value = $.val.value.replace(/\D/g, "") || 0;
                 return;
             }
             if (["object", "array"].indexOf(type) < 0) {
-                $.$child.innerHTML = "";
+                $.child.innerHTML = "";
             }
         },
-        add(cols) {
-            let $ = getDomByLJE(cols);
+        // add 按钮
+        add(line) {
+            let $ = getDomByLJE(line);
             let theNew = getDomByData("");
-            $.$child.appendChild(theNew);
+            $.child.appendChild(theNew);
         },
-        remove(cols) {
-            let line = cols.parentNode;
+        // 移除当前行
+        remove(line) {
             line.parentNode.removeChild(line);
         }
     };
@@ -180,18 +249,33 @@
                 let target = event.target;
                 if (target.tagName.toLowerCase() == "select") {
                     let type = target.value;
-                    events.change(target.parentNode.parentNode.parentNode.parentNode, type);
+                    events.change(target.parentNode.parentNode.parentNode.parentNode.parentNode, type);
                 }
             };
             this.$.onclick = function(event) {
                 let target = event.target;
                 let fn = events[target.getAttribute("lje-click")];
-                fn && fn(target.parentNode.parentNode);
+                fn && fn(target.parentNode.parentNode.parentNode);
             };
+
+            // TODO
+            // 对number类型的输入做控制
+            // this.$.onkeydown = function(event) {
+            //     console.log(event.target);
+            // };
         }
 
+        // 将数据传染UI
         renderByData(json = {}) {
             this.$.innerHTML = '<div class="locus-json-edit">' + getHTMLByData(json, "#") + "</div>";
+            this.key = keyIndex - 1;
+        }
+
+        // 获取UI编辑后的数据
+        getData() {
+            return getDataByLine(this.$.querySelector('[key="' + this.key + '"]'))[0];
+            // let $ = getDomByLJE(this.$.querySelector(".lje-line > .lje-cols"))
+            // console.log($)
         }
     }
 
