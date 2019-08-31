@@ -4,5 +4,5 @@ jsonEdit.renderByData({ a: "zz", b: "xx", c: ["x", "y", "z", true, false, null, 
 
 document.getElementById("output").onclick = function() {
     let out = jsonEdit.getData();
-    console.log("out", out);
+    console.log("out for edit", out);
 };
