@@ -1,6 +1,6 @@
 {
     "name": "h5-json-edit",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "the h5-json-edit",
     "main": "dist/lib/json-edit.js",
     "scripts": {

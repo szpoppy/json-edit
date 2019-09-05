@@ -194,6 +194,15 @@ document.getElementById("output").onclick = function() {
 
         &-child {
             padding: 5px 0 5px 15px;
+            position: relative;
+            &:before {
+                content: "";
+                width: 0;
+                position: absolute;
+                top: 5px;
+                bottom: 15px;
+                border-left: 1px dashed #cccccc;
+            }
             &.the-key > .lje-line > .lje-cols {
                 .key,
                 .is {
