@@ -1,7 +1,7 @@
 {
-    "name": "json-edit",
-    "version": "1.0.0",
-    "description": "the json-edit",
+    "name": "h5-json-edit",
+    "version": "1.0.1",
+    "description": "the h5-json-edit",
     "main": "dist/libs/index.js",
     "scripts": {
         "start": "node ./bin/www"
