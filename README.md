@@ -78,13 +78,13 @@ document.getElementById("output").onclick = function() {
             display: flex;
             &.sub-type-object,
             &.sub-type-array {
-                .full {
+                .sub-full {
                     display: none;
                 }
             }
             &.sub-type-string,
             &.sub-type-number {
-                .add {
+                .sub-add {
                     display: none;
                 }
             }
