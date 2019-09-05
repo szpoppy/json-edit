@@ -36,16 +36,16 @@
     let keyIndex = 10;
     // 没一行的html结构
     let lineString = `<div class="lje-line {#isRoot}" key="{#id}">
-                        <div class="lje-cols type-{#type}" lje{#id}="cols">
-                            <div class="lje-col key">
+                        <div class="lje-cols sub-type-{#type}" lje{#id}="cols">
+                            <div class="lje-col sub-key">
                                 <div class="lje-ipt">
                                     <input type="text" lje{#id}="key" {#keyDis} value="{#key}" />
                                 </div>
                             </div>
-                            <div class="lje-col icon is">
+                            <div class="lje-col sub-icon sub-is">
                                 <div class="lje-is">:</div>
                             </div>
-                            <div class="lje-col select">
+                            <div class="lje-col sub-select">
                                 <div class="lje-select">
                                     <span class="select-c">
                                         <select lje{#id}="sel">
@@ -60,15 +60,15 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="lje-col full">
+                            <div class="lje-col sub-full">
                                 <div class="lje-ipt">
                                     <input type="text" lje{#id}="val" value="{#value}" />
                                 </div>
                             </div>
-                            <div class="lje-col icon add">
+                            <div class="lje-col sub-icon sub-add">
                                 <div class="lje-add" lje-click="add"></div>
                             </div>
-                            <div class="lje-col icon remove">
+                            <div class="lje-col sub-icon sub-remove">
                                 <div class="lje-remove" lje-click="remove"></div>
                             </div>
                         </div>
@@ -220,7 +220,7 @@
         // select change
         change(line, type) {
             let $ = getDomByLJE(line);
-            $.cols.className = "lje-cols type-" + type;
+            $.cols.className = "lje-cols sub-type-" + type;
             $.child.className = "lje-child" + (type == "object" ? " the-key" : "");
             if (type == "number") {
                 $.val.value = $.val.value.replace(/\D/g, "") || 0;

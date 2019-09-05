@@ -19,10 +19,11 @@
 -   浏览器中输入http://127.0.0.1:3102 (PC)
 -   浏览器中输入http://ip:3102 (手机浏览器)
 
-## 获取 vue-unicom
+## 获取 h5-json-edit
 
 -   npm i h5-json-edit
 -   github 下载 zip 包，dist/lib/json-edit.js，可以直接引入 到页面
+-   主要：引入的 JS，无样式，样式参照 src/res/style.less 或者 dist/res/style.less
 
 ## 实例
 
@@ -47,5 +48,163 @@ document.getElementById("output").onclick = function() {
 };
 ```
 
+## 样式参照
+
+```less
+// json-edit 样式
+@main-color: #1c3e64;
+@main-height: 22px;
+.locus-json-edit {
+    height: 100%;
+    overflow: auto;
+    padding: 5px 0;
+    box-sizing: border-box;
+    .lje {
+        &-line {
+            &.the-root {
+                > .lje-cols {
+                    .sub-key,
+                    .sub-is {
+                        display: block !important;
+                    }
+                    .sub-remove {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+        &-cols {
+            padding: 1px 10px;
+            display: flex;
+            &.sub-type-object,
+            &.sub-type-array {
+                .full {
+                    display: none;
+                }
+            }
+            &.sub-type-string,
+            &.sub-type-number {
+                .add {
+                    display: none;
+                }
+            }
+            &.sub-type-null,
+            &.sub-type-true,
+            &.sub-type-false {
+                .sub-add,
+                .sub-full {
+                    display: none;
+                }
+            }
+        }
+        &-col {
+            float: left;
+            margin-left: 2px;
+            &.sub-full {
+                flex: 1;
+            }
+            &.sub-key {
+                width: 80px;
+            }
+            &.sub-icon {
+                width: @main-height + 2;
+            }
+            &.sub-key,
+            &.sub-is {
+                display: none;
+            }
+        }
+        &-select {
+            .-select(@main-color, @main-height);
+            border-radius: 3px;
+        }
+        &-ipt {
+            .-ipt(@main-color, @main-height);
+            input {
+                border-radius: 3px;
+            }
+        }
+        &-remove {
+            height: @main-height - 2;
+            border: 1px solid #dedede;
+            position: relative;
+            border-radius: 3px;
+            margin: 1px;
+            &:before {
+                height: 2px;
+                background-color: #dedede;
+                width: 70%;
+                display: block;
+                content: "";
+                left: 15%;
+                top: 9px;
+                position: absolute;
+            }
+
+            &:hover {
+                border-color: @main-color;
+                &:before {
+                    background-color: @main-color;
+                }
+            }
+        }
+        &-add {
+            height: @main-height - 2;
+            border: 1px solid #dedede;
+            position: relative;
+            border-radius: 3px;
+            margin: 1px;
+            &:before {
+                height: 2px;
+                background-color: #dedede;
+                width: 70%;
+                display: block;
+                content: "";
+                left: 15%;
+                top: 9px;
+                position: absolute;
+            }
+            &:after {
+                width: 2px;
+                background-color: #dedede;
+                height: 70%;
+                display: block;
+                content: "";
+                left: 9px;
+                top: 15%;
+                position: absolute;
+            }
+
+            &:hover {
+                border-color: @main-color;
+                &:before,
+                &:after {
+                    background-color: @main-color;
+                }
+            }
+        }
+
+        &-is {
+            height: @main-height;
+            border: 1px solid transparent;
+            position: relative;
+            border-radius: 3px;
+            text-align: center;
+        }
+
+        &-child {
+            padding: 5px 0 5px 15px;
+            &.the-key > .lje-line > .lje-cols {
+                .key,
+                .is {
+                    display: block;
+                }
+            }
+        }
+    }
+}
+```
+
 ## 截图
+
 <img src="./img.png" />

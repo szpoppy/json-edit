@@ -29,6 +29,7 @@ body {
     .-btn(@main-color, @main-height);
 }
 
+// json-edit 样式
 .locus-json-edit {
     height: 100%;
     overflow: auto;
@@ -38,11 +39,11 @@ body {
         &-line {
             &.the-root {
                 > .lje-cols {
-                    .key,
-                    .is {
+                    .sub-key,
+                    .sub-is {
                         display: block !important;
                     }
-                    .remove {
+                    .sub-remove {
                         display: none !important;
                     }
                 }
@@ -51,23 +52,23 @@ body {
         &-cols {
             padding: 1px 10px;
             display: flex;
-            &.type-object,
-            &.type-array {
+            &.sub-type-object,
+            &.sub-type-array {
                 .full {
                     display: none;
                 }
             }
-            &.type-string,
-            &.type-number {
+            &.sub-type-string,
+            &.sub-type-number {
                 .add {
                     display: none;
                 }
             }
-            &.type-null,
-            &.type-true,
-            &.type-false {
-                .add,
-                .full {
+            &.sub-type-null,
+            &.sub-type-true,
+            &.sub-type-false {
+                .sub-add,
+                .sub-full {
                     display: none;
                 }
             }
@@ -75,17 +76,17 @@ body {
         &-col {
             float: left;
             margin-left: 2px;
-            &.full {
+            &.sub-full {
                 flex: 1;
             }
-            &.key {
+            &.sub-key {
                 width: 80px;
             }
-            &.icon {
+            &.sub-icon {
                 width: @main-height + 2;
             }
-            &.key,
-            &.is {
+            &.sub-key,
+            &.sub-is {
                 display: none;
             }
         }
