@@ -204,8 +204,8 @@ document.getElementById("output").onclick = function() {
                 border-left: 1px dashed #cccccc;
             }
             &.the-key > .lje-line > .lje-cols {
-                .key,
-                .is {
+                .sub-key,
+                .sub-is {
                     display: block;
                 }
             }
